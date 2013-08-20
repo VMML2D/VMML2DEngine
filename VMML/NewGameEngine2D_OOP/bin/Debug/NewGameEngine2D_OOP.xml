@@ -1,0 +1,115 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+NewGameEngine2D_OOP
+</name>
+</assembly>
+<members>
+<member name="M:NewGameEngine2D_OOP.TileMap.LoadMap.#ctor(System.String)">
+	<summary>
+ Intialize a new File.
+ </summary>
+	<param name="Path"></param>
+	<remarks></remarks>
+</member><member name="T:NewGameEngine2D_OOP.TileMap.LoadMap">
+	<summary>
+ Loading a 2D-TileMap from a file(supporting all extensions!)
+ </summary>
+	<remarks></remarks>
+</member><member name="T:NewGameEngine2D_OOP.TileMap.CollisionDetection_TileMap">
+	<summary>
+ A class to detect collision by rec in a (!) converted TileMap.
+ </summary>
+	<remarks></remarks>
+</member><member name="T:NewGameEngine2D_OOP.TileMap.ConvertMap">
+	<summary>
+ Class to convert a map to the supported tilemap.
+ </summary>
+	<remarks></remarks>
+</member><member name="T:NewGameEngine2D_OOP.TileMap.Player">
+	<summary>
+ Player class.
+ </summary>
+	<remarks></remarks>
+</member><member name="T:NewGameEngine2D_OOP.TileMap.Camera">
+	<summary>
+ This class allows you move the camera in a 2D-sphere
+ </summary>
+	<remarks></remarks>
+</member><member name="T:NewGameEngine2D_OOP.TileMap.TileTexture">
+	<summary>
+ This class allows you to load a tile from a *.bmp-TileSet.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.AnimateRectangleInStack.op_Addition(NewGameEngine2D_OOP.AnimateRectangleInStack,System.Int32)">
+	<summary>
+ Vergrößert jeweils den X,Y-Wert um den angegeben Expansewert.
+ </summary>
+	<param name="AnimateRectangleInStack"></param>
+	<param name="Value"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="P:NewGameEngine2D_OOP.My.Resources.Resources.ResourceManager">
+	<summary>
+  Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+</summary>
+</member><member name="P:NewGameEngine2D_OOP.My.Resources.Resources.Culture">
+	<summary>
+  Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+  Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+</summary>
+</member><member name="T:NewGameEngine2D_OOP.My.Resources.Resources">
+	<summary>
+  Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+</summary>
+</member><member name="F:NewGameEngine2D_OOP.Pathfinding.Pathfindig_Bot.PosXBot">
+	<summary>
+ Die berechnete Variable, kann nun abgegriffen werden, um die Position(PointX) des Bot_Rectangles
+ neu festzulegen.(Nutzen Sie die Me.Invalidate()-Methode)
+ </summary>
+	<remarks></remarks>
+</member><member name="F:NewGameEngine2D_OOP.Pathfinding.Pathfindig_Bot.PosYBot">
+	<summary>
+ Die berechnete Variable, kann nun abgegriffen werden, um die Position(PointY) des Bot_Rectangles
+ neu festzulegen.(Nutzen Sie die Me.Invalidate()-Methode)
+ </summary>
+	<remarks></remarks>
+</member><member name="F:NewGameEngine2D_OOP.Pathfinding.Pathfindig_Bot.Bot_Width">
+	<summary>
+ Die berechnete Variable, kann nun abgegriffen werden, um die Breite des Bot_Rectangles
+ neu festzulegen.(Nutzen Sie die Me.Invalidate()-Methode)
+ </summary>
+	<remarks></remarks>
+</member><member name="F:NewGameEngine2D_OOP.Pathfinding.Pathfindig_Bot.Bot_Height">
+	<summary>
+ Die berechnete Variable, kann nun abgegriffen werden, um die Höhe des Bot_Rectangles
+ neu festzulegen.(Nutzen Sie die Me.Invalidate()-Methode)
+ </summary>
+	<remarks></remarks>
+</member><member name="F:NewGameEngine2D_OOP.Pathfinding.Pathfindig_Bot.Expanse">
+	<summary>
+ Gibt die Höhe des Rectangles, unmittelbar am Y:0-Bereich,
+ und demzufolge die Höhe unmittelbar am  Y&gt;0-Bereich an.
+ Dieses muss im folgendem Schema angegeben werden "zB:3.0"
+ </summary>
+	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.Pathfinding.Pathfindig_Bot.Pathfinding(System.Drawing.Rectangle,System.Drawing.Rectangle,System.Drawing.Rectangle,System.Drawing.Rectangle,System.Double,System.Double)">
+	<summary>
+ Findet einen Weg zum Spieler, um Ihn anzugreifen.
+ Funktion befindet sich in der PreAlpha-Phase!
+ RecPlayer, der Spieler
+ RecBot, die Targetion
+ Object_Bot,festlegen des unteren Bereiches
+ Object_Top,festlegen des oberen Bereiches
+ SpeedX,Übergang des Rectangles(PointX)
+ SpeedY,Übergang des Rectangles(PointY)
+ </summary>
+	<param name="RecPlayer"></param>
+	<param name="RecBot"></param>
+	<param name="Object_Bot"></param>
+	<param name="Object_Top"></param>
+	<remarks></remarks>
+</member>
+</members>
+</doc>
