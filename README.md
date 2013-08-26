@@ -21,4 +21,4 @@ Greetings,
 Computer/Spiele-Info.com
 
 
-LAST UPDATE:20.8.2013(!)
+LAST UPDATE:26.8.2013(!)
