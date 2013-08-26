@@ -79,6 +79,7 @@
     <Compile Include="Math.vb" />
     <Compile Include="ParticleClass.vb" />
     <Compile Include="Pathfinding.vb" />
+    <Compile Include="ReadINI.vb" />
     <Compile Include="StartEngine.vb" />
     <Compile Include="TileMap.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />

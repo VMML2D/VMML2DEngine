@@ -86,24 +86,80 @@ Namespace TileMap
         'Camera
         Private Camera As New Camera
         Private NewPos As PointF
+        Private GridSize As Integer = 30
+        Private ShowedGrid As Boolean
         'Public properties
         Public Property TextureWall As Bitmap
         Public Property TextureGround As Bitmap
 
+        '---INI---
+        Private ReadINI As INIDatei
 
-        Public Sub New(Path As String, Map As String)
+        Private ID_Wall As String
+        Private ID_Ground As String
+
+        Private ConvertSize As Integer
+
+        Private TextureWallINI As Bitmap
+        Private TextureGroundINI As Bitmap
+
+
+
+        Public Sub New(Path As String, Map As String, Optional ByVal IDListPath As String = "")
+            If IDListPath = "" Then
+            Else
+                ReadINI = New INIDatei(IDListPath)
+                ReadID()
+            End If
+
             MapPath = Path
             MapBuffer = Map
             SBuffer_LineForLine = File.ReadAllLines(MapPath)
         End Sub
+        Private Sub ReadID()
+            ID_Wall = ReadINI.WertLesen("ID", "WALL_")
+            ID_Ground = ReadINI.WertLesen("ID", "GROUND_")
+
+            TextureWallINI = New Bitmap(ReadINI.WertLesen("TEXTURE2D", "TEXTURE_WALL_"))
+            TextureGroundINI = New Bitmap(ReadINI.WertLesen("TEXTURE2D", "TEXTURE_GROUND_"))
+            ConvertSize = Integer.Parse(ReadINI.WertLesen("MAPSIZE", "MAPSIZE_X_"))
+        End Sub
         Public Overrides Function ToString() As String
             Return MapBuffer
         End Function
+        Public Sub RecsByID(graphics As Graphics)
+            Try
+                For y = 0 To MapBuffer.Length
+                    Y_LineBuffer = SBuffer_LineForLine(y)
+                    For x = 0 To Y_LineBuffer.Length / ConvertSize
+                        Dim ConvertMap() As String = Y_LineBuffer.Split(" "c)
+                        Select Case ConvertMap(Convert.ToInt32(x))
+                            Case ID_Ground.ToString
+                                graphics.DrawImage(TextureGroundINI, New Rectangle(Convert.ToInt32(x * 30), y * 30, 30, 30))
+                            Case ID_Wall.ToString
+                                graphics.DrawImage(TextureWallINI, New Rectangle(Convert.ToInt32(x * 30), y * 30, 30, 30))
+                        End Select
+                    Next
+                Next
+            Catch
+            End Try
+        End Sub
         Public Sub MoveCamera(PositionX As Boolean, Speed As Single)
             If PositionX Then
                 Camera.CameraX += Speed
             Else
                 Camera.CameraY += Speed
+            End If
+            CollisionStack.Flush()
+
+        End Sub
+        Public Sub ShowTileGrid()
+            If ShowedGrid Then
+                GridSize = 32
+                ShowedGrid = False
+            Else
+                GridSize = 34
+                ShowedGrid = True
             End If
         End Sub
         Public Sub DrawTiles(Graphics As Graphics, ConvertSize As Double)
@@ -114,16 +170,16 @@ Namespace TileMap
                         Dim ConvertMap As String() = Y_LineBuffer.Split(" "c)
                         Select Case ConvertMap(Convert.ToInt32(x))
                             Case "0"
-                                MapX = Convert.ToInt32(x * 30)
-                                MapY = y * 30
+                                MapX = Convert.ToInt32(x * GridSize)
+                                MapY = y * GridSize
                                 NewPos = Camera.MoveCamera(MapX, MapY)
-                                Boden = New RectangleF(NewPos, New Size(30, 30))
+                                Boden = New RectangleF(NewPos, New Size(32, 32))
                                 Graphics.DrawImage(TextureGround, Boden)
                             Case "1"
-                                MapX = Convert.ToInt32(x * 30)
-                                MapY = y * 30
+                                MapX = Convert.ToInt32(x * GridSize)
+                                MapY = y * GridSize
                                 NewPos = Camera.MoveCamera(MapX, MapY)
-                                Wand = New RectangleF(NewPos, New Size(30, 30))
+                                Wand = New RectangleF(NewPos, New Size(32, 32))
                                 CollisionStack.AddObject(MapBuffer, Wand)
                                 Graphics.DrawImage(TextureWall, Wand)
                             Case Else

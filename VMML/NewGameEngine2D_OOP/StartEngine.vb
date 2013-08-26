@@ -9,9 +9,11 @@ Namespace StartEngine
 
         Public Shared Sub Start(Form As Form)
             Try
+                Form.WindowState = FormWindowState.Minimized
+                Form.FormBorderStyle = FormBorderStyle.None
+                Form.WindowState = FormWindowState.Maximized
                 Form.Show()
                 Form.Focus()
-                Cursor.Hide()
                 Do While True
                     Application.DoEvents()
                     Form.Invalidate()
@@ -19,7 +21,6 @@ Namespace StartEngine
             Catch
                 MessageBox.Show(Err.GetException.ToString)
             End Try
-
         End Sub
     End Class
     Public Class Unload

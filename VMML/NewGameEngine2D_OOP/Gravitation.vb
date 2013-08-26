@@ -4,12 +4,15 @@
     Private ObjectsRecCollision As New Stack(Of System.Drawing.RectangleF)
 
     Private YJumpBuffer As Single
-    Private NewLocation As System.Drawing.PointF
+    Private NewRectangle As System.Drawing.RectangleF
     Private IsColladed As Boolean
     Private Y As Single
     Private Property Gravitation As Boolean
 
     Private Pressed As Boolean
+
+    Private GravitationSpeed As Single
+
 
 
     Public Sub AddCollisionObjects(Rec As System.Drawing.RectangleF)
@@ -27,7 +30,7 @@
 
 
     End Sub
-    Public Function Gravitate(Rec As System.Drawing.RectangleF, MaximumJump As Single, MaximumFall As Single, Speed As Single) As System.Drawing.PointF
+    Public Function Gravitate(Rec As System.Drawing.RectangleF, MaximumJump As Single, MaximumFall As Single, Speed As Single) As System.Drawing.RectangleF
         For Each collisionobj In ObjectsRecCollision
             If Rec.IntersectsWith(collisionobj) Then
                 IsColladed = True
@@ -39,8 +42,10 @@
         If Gravitation Then
             If IsColladed Or Y >= MaximumFall Then
                 Pressed = False
+                GravitationSpeed = 0
             Else
-                Y += Speed
+                GravitationSpeed += Speed / 3
+                Y += GravitationSpeed
             End If
         Else
             If YJumpBuffer >= MaximumJump Then
@@ -51,7 +56,7 @@
                 YJumpBuffer += 1
             End If
         End If
-        NewLocation = New Drawing.PointF(Rec.Location.X, Y)
-        Return NewLocation
+        NewRectangle = New System.Drawing.RectangleF(Rec.Location.X, Y, 30, 30)
+        Return NewRectangle
     End Function
 End Class
