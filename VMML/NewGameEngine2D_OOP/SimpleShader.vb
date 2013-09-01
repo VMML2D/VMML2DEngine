@@ -28,7 +28,7 @@
             Case 5
 
             Case Else
-                Throw New Exception("This engine supports only a quality of maximum fifth strogness.")
+                Throw New Exception("This engine supports only a quality of maximum fifth strongness.")
         End Select
 
     End Sub
