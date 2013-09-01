@@ -10,11 +10,11 @@ Imports System.Runtime.InteropServices
 
 ' Die Werte der Assemblyattribute überprüfen
 
-<Assembly: AssemblyTitle("NewGameEngine2D_OOP")> 
+<Assembly: AssemblyTitle("VMML")> 
 <Assembly: AssemblyDescription("2D-GameEngine by 3r0rXx")> 
 <Assembly: AssemblyCompany("Computer/Spiele-Info.net")> 
-<Assembly: AssemblyProduct("NewGameEngine2D_OOP")> 
-<Assembly: AssemblyCopyright("Copyright ©Computer/Spiele-Info.net 2013")> 
+<Assembly: AssemblyProduct("VMML")> 
+<Assembly: AssemblyCopyright("Copyright © Computer/Spiele-Info.net 2013")> 
 <Assembly: AssemblyTrademark("Computer/Spiele-Info.net")> 
 
 <Assembly: ComVisible(False)> 
@@ -33,7 +33,7 @@ Imports System.Runtime.InteropServices
 ' übernehmen, indem Sie "*" eingeben:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.0.0")> 
-<Assembly: AssemblyFileVersion("1.2.1.0")> 
+<Assembly: AssemblyVersion("1.0.1.0")> 
+<Assembly: AssemblyFileVersion("1.3.1.0")> 
 
 <Assembly: NeutralResourcesLanguageAttribute("de")> 

@@ -22,6 +22,60 @@ NewGameEngine2D_OOP
  A class to detect collision by rec in a (!) converted TileMap.
  </summary>
 	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.TileMap.ConvertMap.#ctor(System.String,System.String,System.String)">
+	<summary>
+ Converts the map from binaries in tiles
+ </summary>
+	<param name="Path"></param>
+	<param name="Map"></param>
+	<param name="IDListPath"></param>
+	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.TileMap.ConvertMap.ToString">
+	<summary>
+ Show the map before it's converted.
+ </summary>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.TileMap.ConvertMap.RecsByID(System.Drawing.Graphics)">
+	<summary>
+ Filling tiles via ini-file-informations.
+ </summary>
+	<param name="graphics"></param>
+	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.TileMap.ConvertMap.MoveCamera(System.Boolean,System.Single)">
+	<summary>
+ Moving the tilecamera to show other regions of the map.
+ </summary>
+	<param name="PositionX"></param>
+	<param name="Speed"></param>
+	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.TileMap.ConvertMap.ShowTileGrid">
+	<summary>
+ Show grid, tile by tile.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.TileMap.ConvertMap.DrawTiles(System.Drawing.Graphics,System.Double)">
+	<summary>
+ Converting and filling tilesets with the declared textures.
+ </summary>
+	<param name="Graphics"></param>
+	<param name="ConvertSize"></param>
+	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.TileMap.ConvertMap.DrawTileSetsFromBitmap(System.Drawing.Graphics,System.String,System.Double)">
+	<summary>
+ Filling tiles with textures, that belongs a tileset-texture-image.
+ </summary>
+	<param name="Graphics"></param>
+	<param name="TileSetPath2D"></param>
+	<param name="ConverterSizeBuffer"></param>
+	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.TileMap.ConvertMap.Collision(System.Drawing.RectangleF)">
+	<summary>
+ Check out a collision between defined rectangle and tilerecs.
+ </summary>
+	<param name="rec"></param>
+	<returns></returns>
+	<remarks></remarks>
 </member><member name="T:NewGameEngine2D_OOP.TileMap.ConvertMap">
 	<summary>
  Class to convert a map to the supported tilemap.
@@ -36,6 +90,24 @@ NewGameEngine2D_OOP
 	<summary>
  This class allows you move the camera in a 2D-sphere
  </summary>
+	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.TileMap.TileTexture.#ctor(System.String)">
+	<summary>
+ Initialize a new TileSet_Bitmap.
+ </summary>
+	<param name="TileTexturePath2D"></param>
+	<remarks></remarks>
+</member><member name="M:NewGameEngine2D_OOP.TileMap.TileTexture.GetTileSet(System.Drawing.Graphics,System.Int32,System.Double,System.Double,System.Int32,System.Int32,System.Int32)">
+	<summary>
+ Show and fill a rectangle with the defined tileset-texture.
+ </summary>
+	<param name="Graphics"></param>
+	<param name="TileSize"></param>
+	<param name="TileNumberX"></param>
+	<param name="TileNumberY"></param>
+	<param name="X"></param>
+	<param name="Y"></param>
+	<param name="Size"></param>
 	<remarks></remarks>
 </member><member name="T:NewGameEngine2D_OOP.TileMap.TileTexture">
 	<summary>

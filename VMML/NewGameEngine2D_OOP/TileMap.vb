@@ -22,7 +22,7 @@ Namespace TileMap
                     Open_ReadFile = New StreamReader(Path)
                     Map = Open_ReadFile.ReadToEnd
                 Else
-                    Throw New ArgumentException("This path is not exist!")
+                    Throw New ArgumentException("This path is not exist: " & Path)
                 End If
             Catch
                 Throw New ArgumentException(Err.GetException.ToString)
@@ -86,7 +86,7 @@ Namespace TileMap
         'Camera
         Private Camera As New Camera
         Private NewPos As PointF
-        Private GridSize As Integer = 30
+        Private GridSize As Integer = 80
         Private ShowedGrid As Boolean
         'Public properties
         Public Property TextureWall As Bitmap
@@ -102,9 +102,13 @@ Namespace TileMap
 
         Private TextureWallINI As Bitmap
         Private TextureGroundINI As Bitmap
-
-
-
+        ''' <summary>
+        ''' Converts the map from binaries in tiles
+        ''' </summary>
+        ''' <param name="Path"></param>
+        ''' <param name="Map"></param>
+        ''' <param name="IDListPath"></param>
+        ''' <remarks></remarks>
         Public Sub New(Path As String, Map As String, Optional ByVal IDListPath As String = "")
             If IDListPath = "" Then
             Else
@@ -120,13 +124,24 @@ Namespace TileMap
             ID_Wall = ReadINI.WertLesen("ID", "WALL_")
             ID_Ground = ReadINI.WertLesen("ID", "GROUND_")
 
+
             TextureWallINI = New Bitmap(ReadINI.WertLesen("TEXTURE2D", "TEXTURE_WALL_"))
             TextureGroundINI = New Bitmap(ReadINI.WertLesen("TEXTURE2D", "TEXTURE_GROUND_"))
             ConvertSize = Integer.Parse(ReadINI.WertLesen("MAPSIZE", "MAPSIZE_X_"))
         End Sub
+        ''' <summary>
+        ''' Show the map before it's converted.
+        ''' </summary>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
         Public Overrides Function ToString() As String
             Return MapBuffer
         End Function
+        ''' <summary>
+        ''' Filling tiles via ini-file-informations.
+        ''' </summary>
+        ''' <param name="graphics"></param>
+        ''' <remarks></remarks>
         Public Sub RecsByID(graphics As Graphics)
             Try
                 For y = 0 To MapBuffer.Length
@@ -144,6 +159,12 @@ Namespace TileMap
             Catch
             End Try
         End Sub
+        ''' <summary>
+        ''' Moving the tilecamera to show other regions of the map.
+        ''' </summary>
+        ''' <param name="PositionX"></param>
+        ''' <param name="Speed"></param>
+        ''' <remarks></remarks>
         Public Sub MoveCamera(PositionX As Boolean, Speed As Single)
             If PositionX Then
                 Camera.CameraX += Speed
@@ -153,6 +174,10 @@ Namespace TileMap
             CollisionStack.Flush()
 
         End Sub
+        ''' <summary>
+        ''' Show grid, tile by tile.
+        ''' </summary>
+        ''' <remarks></remarks>
         Public Sub ShowTileGrid()
             If ShowedGrid Then
                 GridSize = 32
@@ -162,6 +187,12 @@ Namespace TileMap
                 ShowedGrid = True
             End If
         End Sub
+        ''' <summary>
+        ''' Converting and filling tilesets with the declared textures.
+        ''' </summary>
+        ''' <param name="Graphics"></param>
+        ''' <param name="ConvertSize"></param>
+        ''' <remarks></remarks>
         Public Sub DrawTiles(Graphics As Graphics, ConvertSize As Double)
             Try
                 For y = 0 To MapBuffer.Length
@@ -170,22 +201,22 @@ Namespace TileMap
                         Dim ConvertMap As String() = Y_LineBuffer.Split(" "c)
                         Select Case ConvertMap(Convert.ToInt32(x))
                             Case "0"
-                                MapX = Convert.ToInt32(x * GridSize)
-                                MapY = y * GridSize
-                                NewPos = Camera.MoveCamera(MapX, MapY)
-                                Boden = New RectangleF(NewPos, New Size(32, 32))
-                                Graphics.DrawImage(TextureGround, Boden)
+                                If TextureGround Is Nothing Then
+                                    Exit Select
+                                Else
+                                    MapX = Convert.ToInt32(x * GridSize)
+                                    MapY = y * GridSize
+                                    NewPos = Camera.MoveCamera(MapX, MapY)
+                                    Boden = New RectangleF(NewPos, New Size(80, 80))
+                                    Graphics.DrawImage(TextureGround, Boden)
+                                End If
                             Case "1"
                                 MapX = Convert.ToInt32(x * GridSize)
                                 MapY = y * GridSize
                                 NewPos = Camera.MoveCamera(MapX, MapY)
-                                Wand = New RectangleF(NewPos, New Size(32, 32))
+                                Wand = New RectangleF(NewPos, New Size(80, 80))
                                 CollisionStack.AddObject(MapBuffer, Wand)
                                 Graphics.DrawImage(TextureWall, Wand)
-                            Case Else
-                                MessageBox.Show("This converted map contains charcters, that don't exist in this version of the engine!", "CastInvalidException", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                                Environment.Exit(Environment.ExitCode)
-
                         End Select
                     Next
                 Next
@@ -197,7 +228,13 @@ Namespace TileMap
         End Sub
 
         Private TileTexture As TileTexture
-
+        ''' <summary>
+        ''' Filling tiles with textures, that belongs a tileset-texture-image.
+        ''' </summary>
+        ''' <param name="Graphics"></param>
+        ''' <param name="TileSetPath2D"></param>
+        ''' <param name="ConverterSizeBuffer"></param>
+        ''' <remarks></remarks>
         Public Sub DrawTileSetsFromBitmap(Graphics As Graphics, TileSetPath2D As String, ConverterSizeBuffer As Double)
             TileTexture = New TileTexture(TileSetPath2D)
             Try
@@ -217,7 +254,13 @@ Namespace TileMap
             Catch
             End Try
         End Sub
-        Public Function Collision(rec As Rectangle) As Boolean
+        ''' <summary>
+        ''' Check out a collision between defined rectangle and tilerecs.
+        ''' </summary>
+        ''' <param name="rec"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function Collision(rec As RectangleF) As Boolean
             CollisionStack.CollisionDetection(rec)
             If CollisionStack.Collapse Then
                 Return True
@@ -274,9 +317,25 @@ Namespace TileMap
         Private BufferTile As Bitmap
 
         Private Tile As RectangleF
+        ''' <summary>
+        ''' Initialize a new TileSet_Bitmap.
+        ''' </summary>
+        ''' <param name="TileTexturePath2D"></param>
+        ''' <remarks></remarks>
         Public Sub New(TileTexturePath2D As String)
             MapTile = New System.Drawing.Bitmap(TileTexturePath2D)
         End Sub
+        ''' <summary>
+        ''' Show and fill a rectangle with the defined tileset-texture.
+        ''' </summary>
+        ''' <param name="Graphics"></param>
+        ''' <param name="TileSize"></param>
+        ''' <param name="TileNumberX"></param>
+        ''' <param name="TileNumberY"></param>
+        ''' <param name="X"></param>
+        ''' <param name="Y"></param>
+        ''' <param name="Size"></param>
+        ''' <remarks></remarks>
         Public Sub GetTileSet(Graphics As Graphics, TileSize As Integer, TileNumberX As Double, TileNumberY As Double, X As Integer, Y As Integer, Size As Integer)
             TileNumberX = TileNumberX * TileSize
             TileNumberY = TileNumberY * TileSize
