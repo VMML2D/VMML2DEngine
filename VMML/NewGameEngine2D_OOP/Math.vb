@@ -44,6 +44,7 @@
         'ToDo
         'Several operators
         'Calculating and returning of 2 points (Vector2)
+
     End Structure
 End Namespace
 

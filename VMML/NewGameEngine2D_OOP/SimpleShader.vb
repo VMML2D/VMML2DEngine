@@ -1,35 +1,39 @@
-﻿Public Class SimpleShader
+﻿Imports System.Drawing
+Public Class SimpleShader
+    'ToDo
+    'Pixelshader
+    'Waterreflexion(Soon)
+    'Light and Shadow
     Public Property ShaderQuality As Single
 
-    Private VMMLStack_Top, VMMLStack_Middle, VMMLStack_Bottom As New Stack(Of System.Drawing.Rectangle)
-
-    Private BufferTop1, BufferTop2, BufferMiddle1, BufferMiddle2, BufferBottom1, BufferBottom2 As Integer
-    Private Texture2d As System.Drawing.Bitmap
-    Public Sub AddToContent(fragment_top_2d As System.Drawing.Rectangle, fragment_middle_2d As System.Drawing.Rectangle, fragment_bottom_2d As System.Drawing.Rectangle, vmml_2d_texture As vmml_texture2d)
-        VMMLStack_Top.Push(fragment_top_2d)
-        VMMLStack_Middle.Push(fragment_middle_2d)
-        VMMLStack_Bottom.Push(fragment_bottom_2d)
-        Texture2d = vmml_2d_texture.Texture_2d
+    'VMML_EasyShader
+    Private StackOfGrass_test As New Stack(Of RectangleF)
+    Private MatrixTransforming As Single
+    Private Site_bool As Boolean
+    Private rnd_ As New Random
+    Public Sub New(Amount As Integer)
+        For i = 0 To Amount
+            StackOfGrass_test.Push(New RectangleF(rnd_.Next(0, 1400), rnd_.Next(0, 700), 1, rnd_.Next(2, 16)))
+        Next
     End Sub
-    Public Sub VMMLSV(renderer As System.Drawing.Graphics, Optional MaximumBuffer As Integer = 50)
-        Select Case ShaderQuality
-            Case 1
-                For Each recs In VMMLStack_Bottom
-                    If BufferTop1 >= MaximumBuffer Then
+    Public Sub ShaderGrass(Graphics As Graphics)
+        If MatrixTransforming >= 6 Then
+            Site_bool = True
+        ElseIf MatrixTransforming <= 0 Then
+            Site_bool = False
+        End If
 
-                    End If
-                Next
-            Case 2
+        If Site_bool Then
+            MatrixTransforming -= 0.1F
+        Else
 
-            Case 3
+            MatrixTransforming += 0.1F
+        End If
 
-            Case 4
+        Graphics.RotateTransform(MatrixTransforming / 12)
 
-            Case 5
-
-            Case Else
-                Throw New Exception("This engine supports only a quality of maximum fifth strongness.")
-        End Select
-
+        For Each recs In StackOfGrass_test
+            Graphics.FillRectangle(Brushes.darkgreen, recs)
+        Next
     End Sub
 End Class

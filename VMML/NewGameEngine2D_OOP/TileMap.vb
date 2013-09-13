@@ -1,5 +1,8 @@
 ﻿Imports System.IO
 Imports System.Drawing
+
+Imports System.Net
+Imports System.Threading
 Namespace TileMap
     ''' <summary>
     ''' Loading a 2D-TileMap from a file(supporting all extensions!)
@@ -86,11 +89,11 @@ Namespace TileMap
         'Camera
         Private Camera As New Camera
         Private NewPos As PointF
-        Private GridSize As Integer = 80
         Private ShowedGrid As Boolean
         'Public properties
         Public Property TextureWall As Bitmap
         Public Property TextureGround As Bitmap
+        Public Property TileSize As Integer
 
         '---INI---
         Private ReadINI As INIDatei
@@ -102,6 +105,10 @@ Namespace TileMap
 
         Private TextureWallINI As Bitmap
         Private TextureGroundINI As Bitmap
+
+        Private XGrid, YGrid, BufferGrid As Integer
+
+
         ''' <summary>
         ''' Converts the map from binaries in tiles
         ''' </summary>
@@ -178,14 +185,23 @@ Namespace TileMap
         ''' Show grid, tile by tile.
         ''' </summary>
         ''' <remarks></remarks>
-        Public Sub ShowTileGrid()
-            If ShowedGrid Then
-                GridSize = 32
-                ShowedGrid = False
-            Else
-                GridSize = 34
-                ShowedGrid = True
-            End If
+        Public Sub ShowTileGrid(Graphics As Graphics)
+
+            For i = -80 To 600
+                If BufferGrid >= 16 Then
+                    YGrid += TileSize
+                    XGrid = 0
+                    BufferGrid = 0
+                Else
+                    XGrid += TileSize
+                    BufferGrid += 1
+                End If
+                Graphics.DrawRectangle(Pens.Red, New Rectangle(YGrid, XGrid, TileSize, TileSize))
+
+            Next
+            YGrid = 0
+            XGrid = -TileSize
+            BufferGrid = 0
         End Sub
         ''' <summary>
         ''' Converting and filling tilesets with the declared textures.
@@ -204,17 +220,17 @@ Namespace TileMap
                                 If TextureGround Is Nothing Then
                                     Exit Select
                                 Else
-                                    MapX = Convert.ToInt32(x * GridSize)
-                                    MapY = y * GridSize
+                                    MapX = Convert.ToInt32(x * TileSize)
+                                    MapY = y * TileSize
                                     NewPos = Camera.MoveCamera(MapX, MapY)
-                                    Boden = New RectangleF(NewPos, New Size(80, 80))
+                                    Boden = New RectangleF(NewPos, New Size(TileSize, TileSize))
                                     Graphics.DrawImage(TextureGround, Boden)
                                 End If
                             Case "1"
-                                MapX = Convert.ToInt32(x * GridSize)
-                                MapY = y * GridSize
+                                MapX = Convert.ToInt32(x * TileSize)
+                                MapY = y * TileSize
                                 NewPos = Camera.MoveCamera(MapX, MapY)
-                                Wand = New RectangleF(NewPos, New Size(80, 80))
+                                Wand = New RectangleF(NewPos, New Size(TileSize, TileSize))
                                 CollisionStack.AddObject(MapBuffer, Wand)
                                 Graphics.DrawImage(TextureWall, Wand)
                         End Select
@@ -236,7 +252,7 @@ Namespace TileMap
         ''' <param name="ConverterSizeBuffer"></param>
         ''' <remarks></remarks>
         Public Sub DrawTileSetsFromBitmap(Graphics As Graphics, TileSetPath2D As String, ConverterSizeBuffer As Double)
-            TileTexture = New TileTexture(TileSetPath2D)
+            TileTexture = New TileTexture(New vmml_texture2d(TileSetPath2D))
             Try
                 For y = 0 To MapBuffer.Length
                     Y_LineBuffer = SBuffer_LineForLine(y)
@@ -278,8 +294,8 @@ Namespace TileMap
         Private LocationOfPlayerRec As PointF
         Private Player As RectangleF
         Private X, Y As Single
-        Public Sub New(Texture2D As String)
-            TexturePlayer = New Bitmap(Texture2D)
+        Public Sub New(Texture2D As vmml_texture2d)
+            TexturePlayer = Texture2D.Texture_2d
         End Sub
         Public Sub MoveLocation(SpeedF As Single, XBoolean As Boolean)
             If XBoolean Then
@@ -322,8 +338,8 @@ Namespace TileMap
         ''' </summary>
         ''' <param name="TileTexturePath2D"></param>
         ''' <remarks></remarks>
-        Public Sub New(TileTexturePath2D As String)
-            MapTile = New System.Drawing.Bitmap(TileTexturePath2D)
+        Public Sub New(TileTexturePath2D As vmml_texture2d)
+            MapTile = TileTexturePath2D.Texture_2d
         End Sub
         ''' <summary>
         ''' Show and fill a rectangle with the defined tileset-texture.
@@ -341,6 +357,28 @@ Namespace TileMap
             TileNumberY = TileNumberY * TileSize
             Tile = New RectangleF(Convert.ToSingle(TileNumberX), Convert.ToSingle(TileNumberY), Size, Size)
             Graphics.DrawImage(MapTile, X, Y, Tile, GraphicsUnit.Pixel)
+        End Sub
+    End Class
+    Public Class NetworkTileMap
+        'ToDo
+        'Sending an Connected-Size by 1 Byte(1)
+        'Recieving the TileMap(Downloading TileMap)
+
+        'Declarations
+
+        Private TileMap_BufferString As String
+
+        Public Sub HostTileMap(ByVal ToUploadTileMap As String)
+            'Get TileMap by constructor
+            'Set TileMap_BufferString to custom constructor- Expression
+            'Upload TileMap_BufferString
+
+            TileMap_BufferString = ToUploadTileMap
+
+        End Sub
+        Public Sub DownloadTileMap(IP As String, Port As Integer, Path As String)
+            'Recieve TileMap from custom Ip and port.
+            'Save on custom path.
         End Sub
     End Class
 End Namespace

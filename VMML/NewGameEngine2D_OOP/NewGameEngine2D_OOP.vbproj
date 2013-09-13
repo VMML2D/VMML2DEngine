@@ -77,6 +77,7 @@
     <Compile Include="Gravitation.vb" />
     <Compile Include="GroupOfRectangle.vb" />
     <Compile Include="Math.vb" />
+    <Compile Include="Network.vb" />
     <Compile Include="ParticleClass.vb" />
     <Compile Include="Pathfinding.vb" />
     <Compile Include="ReadINI.vb" />

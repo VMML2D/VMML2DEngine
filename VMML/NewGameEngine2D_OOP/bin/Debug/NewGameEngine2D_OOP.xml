@@ -49,7 +49,7 @@ NewGameEngine2D_OOP
 	<param name="PositionX"></param>
 	<param name="Speed"></param>
 	<remarks></remarks>
-</member><member name="M:NewGameEngine2D_OOP.TileMap.ConvertMap.ShowTileGrid">
+</member><member name="M:NewGameEngine2D_OOP.TileMap.ConvertMap.ShowTileGrid(System.Drawing.Graphics)">
 	<summary>
  Show grid, tile by tile.
  </summary>
@@ -91,7 +91,7 @@ NewGameEngine2D_OOP
  This class allows you move the camera in a 2D-sphere
  </summary>
 	<remarks></remarks>
-</member><member name="M:NewGameEngine2D_OOP.TileMap.TileTexture.#ctor(System.String)">
+</member><member name="M:NewGameEngine2D_OOP.TileMap.TileTexture.#ctor(NewGameEngine2D_OOP.vmml_texture2d)">
 	<summary>
  Initialize a new TileSet_Bitmap.
  </summary>
