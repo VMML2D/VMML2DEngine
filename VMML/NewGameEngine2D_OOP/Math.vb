@@ -1,4 +1,5 @@
 ﻿Namespace Math
+
     Public Structure Trigonemetry
         Public Const PI As Double = 3.1415926535897931
         Private Shared Function Sqrt(a As Double) As Double
@@ -47,4 +48,3 @@
 
     End Structure
 End Namespace
-

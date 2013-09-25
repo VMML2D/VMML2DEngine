@@ -10,9 +10,12 @@ Namespace TileMap
     ''' <remarks></remarks>
     Public Class LoadMap
         'Declarations
-        Private Open_ReadFile As StreamReader
+        Private ReadFile As String
         '---LoadedMap---
-        Public Map As String
+        Private Map As String
+        Public CompleteMap As String
+
+        Private IntBuffer As Integer
         'Konstruktor
         ''' <summary>
         ''' Intialize a new File.
@@ -22,10 +25,18 @@ Namespace TileMap
         Public Sub New(Path As String)
             Try
                 If File.Exists(Path) Then
-                    Open_ReadFile = New StreamReader(Path)
-                    Map = Open_ReadFile.ReadToEnd
+                    ReadFile = File.ReadAllText(Path)
+                    Map = ReadFile
+                    If Not Map.Contains(",") OrElse Map.Contains(" ") Then
+                        File.WriteAllText(Path, Map.Replace(" ", ","))
+                        CompleteMap = File.ReadAllText(Path)
+                        MessageBox.Show("Converted map to VMML2D_Version  0.21", "Converted", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+1:                  Else
+                        CompleteMap = File.ReadAllText(Path)
+                    End If
+
                 Else
-                    Throw New ArgumentException("This path is not exist: " & Path)
+                    Throw New ArgumentException("This path is not existing: " & Path)
                 End If
             Catch
                 Throw New ArgumentException(Err.GetException.ToString)
@@ -186,7 +197,6 @@ Namespace TileMap
         ''' </summary>
         ''' <remarks></remarks>
         Public Sub ShowTileGrid(Graphics As Graphics)
-
             For i = -80 To 600
                 If BufferGrid >= 16 Then
                     YGrid += TileSize
@@ -214,7 +224,7 @@ Namespace TileMap
                 For y = 0 To MapBuffer.Length
                     Y_LineBuffer = SBuffer_LineForLine(y)
                     For x = 0 To Y_LineBuffer.Length / ConvertSize
-                        Dim ConvertMap As String() = Y_LineBuffer.Split(" "c)
+                        Dim ConvertMap() As String = Y_LineBuffer.Split(","c)
                         Select Case ConvertMap(Convert.ToInt32(x))
                             Case "0"
                                 If TextureGround Is Nothing Then
@@ -242,7 +252,31 @@ Namespace TileMap
             Catch
             End Try
         End Sub
+        Private Tile As RectangleF
+        Private Tile_Wall As RectangleF
 
+        Public Sub ImageTile_In(Graphics As Graphics, TileSet2D As Bitmap, ConvertSizeBuffer As Double, TileSize_ As Integer, Size As Integer)
+            Try
+                For Y = 0 To MapBuffer.Length
+                    Y_LineBuffer = SBuffer_LineForLine(Y)
+                    For X = 0 To Convert.ToInt32(Y_LineBuffer.Length / ConvertSizeBuffer)
+                        For i = 0 To 20
+                            Dim ConvertMap As String() = Y_LineBuffer.Split(","c)
+                            Select Case ConvertMap(Convert.ToInt32(X))
+                                Case i.ToString
+                                    Tile = New RectangleF(Convert.ToSingle(i * TileSize_), 0.0F, Size, Size)
+                                    Graphics.DrawImage(TileSet2D, X * Size, Y * Size, Tile, GraphicsUnit.Pixel)
+                                Case "-" & i
+                                    Tile_Wall = New RectangleF(Convert.ToSingle(i * TileSize_), 0.0F, Size, Size)
+                                    Graphics.DrawImage(TileSet2D, X * Size, Y * Size, Tile_Wall, GraphicsUnit.Pixel)
+                                    CollisionStack.AddObject(MapBuffer, New RectangleF(X * Size, Y * Size, Tile_Wall.Width, Tile_Wall.Height))
+                            End Select
+                        Next
+                    Next
+                Next
+            Catch
+            End Try
+        End Sub
         Private TileTexture As TileTexture
         ''' <summary>
         ''' Filling tiles with textures, that belongs a tileset-texture-image.
