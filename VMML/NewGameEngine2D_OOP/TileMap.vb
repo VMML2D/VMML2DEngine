@@ -268,8 +268,8 @@ Namespace TileMap
                                     Graphics.DrawImage(TileSet2D, X * Size, Y * Size, Tile, GraphicsUnit.Pixel)
                                 Case "-" & i
                                     Tile_Wall = New RectangleF(Convert.ToSingle(i * TileSize_), 0.0F, Size, Size)
-                                    Graphics.DrawImage(TileSet2D, X * Size, Y * Size, Tile_Wall, GraphicsUnit.Pixel)
                                     CollisionStack.AddObject(MapBuffer, New RectangleF(X * Size, Y * Size, Tile_Wall.Width, Tile_Wall.Height))
+                                    Graphics.DrawImage(TileSet2D, X * Size, Y * Size, Tile_Wall, GraphicsUnit.Pixel)
                             End Select
                         Next
                     Next
