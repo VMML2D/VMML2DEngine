@@ -3,6 +3,8 @@ Imports System.Drawing
 
 Imports System.Net
 Imports System.Threading
+Imports System.Text.RegularExpressions
+
 Namespace TileMap
     ''' <summary>
     ''' Loading a 2D-TileMap from a file(supporting all extensions!)
@@ -16,6 +18,7 @@ Namespace TileMap
         Public CompleteMap As String
 
         Private IntBuffer As Integer
+        Private RndNumber As New Random
         'Konstruktor
         ''' <summary>
         ''' Intialize a new File.
@@ -25,18 +28,19 @@ Namespace TileMap
         Public Sub New(Path As String)
             Try
                 If File.Exists(Path) Then
-                    ReadFile = File.ReadAllText(Path)
-                    Map = ReadFile
-                    If Not Map.Contains(",") OrElse Map.Contains(" ") Then
-                        File.WriteAllText(Path, Map.Replace(" ", ","))
-                        CompleteMap = File.ReadAllText(Path)
-                        MessageBox.Show("Converted map to VMML2D_Version  0.21", "Converted", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-1:                  Else
-                        CompleteMap = File.ReadAllText(Path)
-                    End If
 
+                        ReadFile = File.ReadAllText(Path)
+                        Map = ReadFile
+                        If Not Map.Contains(",") Then
+                            File.WriteAllText(Path, Map.Replace(" ", ","))
+                            CompleteMap = File.ReadAllText(Path)
+                            MessageBox.Show("Converted map to VMML2D_Version  0.21", "Converted", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+1:                      Else
+                            CompleteMap = File.ReadAllText(Path)
+                        End If
                 Else
                     Throw New ArgumentException("This path is not existing: " & Path)
+
                 End If
             Catch
                 Throw New ArgumentException(Err.GetException.ToString)
@@ -102,24 +106,13 @@ Namespace TileMap
         Private NewPos As PointF
         Private ShowedGrid As Boolean
         'Public properties
-        Public Property TextureWall As Bitmap
-        Public Property TextureGround As Bitmap
         Public Property TileSize As Integer
 
-        '---INI---
-        Private ReadINI As INIDatei
-
-        Private ID_Wall As String
-        Private ID_Ground As String
-
-        Private ConvertSize As Integer
-
-        Private TextureWallINI As Bitmap
-        Private TextureGroundINI As Bitmap
 
         Private XGrid, YGrid, BufferGrid As Integer
 
-
+        '---Texture_TileSets---
+        Private TileSet2D As Bitmap
         ''' <summary>
         ''' Converts the map from binaries in tiles
         ''' </summary>
@@ -127,25 +120,11 @@ Namespace TileMap
         ''' <param name="Map"></param>
         ''' <param name="IDListPath"></param>
         ''' <remarks></remarks>
-        Public Sub New(Path As String, Map As String, Optional ByVal IDListPath As String = "")
-            If IDListPath = "" Then
-            Else
-                ReadINI = New INIDatei(IDListPath)
-                ReadID()
-            End If
-
+        Public Sub New(Path As String, Map As String, TileSet2D_vmml As vmml_texture2d)
             MapPath = Path
             MapBuffer = Map
             SBuffer_LineForLine = File.ReadAllLines(MapPath)
-        End Sub
-        Private Sub ReadID()
-            ID_Wall = ReadINI.WertLesen("ID", "WALL_")
-            ID_Ground = ReadINI.WertLesen("ID", "GROUND_")
-
-
-            TextureWallINI = New Bitmap(ReadINI.WertLesen("TEXTURE2D", "TEXTURE_WALL_"))
-            TextureGroundINI = New Bitmap(ReadINI.WertLesen("TEXTURE2D", "TEXTURE_GROUND_"))
-            ConvertSize = Integer.Parse(ReadINI.WertLesen("MAPSIZE", "MAPSIZE_X_"))
+            TileSet2D = TileSet2D_vmml.Texture_2d
         End Sub
         ''' <summary>
         ''' Show the map before it's converted.
@@ -155,28 +134,6 @@ Namespace TileMap
         Public Overrides Function ToString() As String
             Return MapBuffer
         End Function
-        ''' <summary>
-        ''' Filling tiles via ini-file-informations.
-        ''' </summary>
-        ''' <param name="graphics"></param>
-        ''' <remarks></remarks>
-        Public Sub RecsByID(graphics As Graphics)
-            Try
-                For y = 0 To MapBuffer.Length
-                    Y_LineBuffer = SBuffer_LineForLine(y)
-                    For x = 0 To Y_LineBuffer.Length / ConvertSize
-                        Dim ConvertMap() As String = Y_LineBuffer.Split(" "c)
-                        Select Case ConvertMap(Convert.ToInt32(x))
-                            Case ID_Ground.ToString
-                                graphics.DrawImage(TextureGroundINI, New Rectangle(Convert.ToInt32(x * 30), y * 30, 30, 30))
-                            Case ID_Wall.ToString
-                                graphics.DrawImage(TextureWallINI, New Rectangle(Convert.ToInt32(x * 30), y * 30, 30, 30))
-                        End Select
-                    Next
-                Next
-            Catch
-            End Try
-        End Sub
         ''' <summary>
         ''' Moving the tilecamera to show other regions of the map.
         ''' </summary>
@@ -213,92 +170,35 @@ Namespace TileMap
             XGrid = -TileSize
             BufferGrid = 0
         End Sub
-        ''' <summary>
-        ''' Converting and filling tilesets with the declared textures.
-        ''' </summary>
-        ''' <param name="Graphics"></param>
-        ''' <param name="ConvertSize"></param>
-        ''' <remarks></remarks>
-        Public Sub DrawTiles(Graphics As Graphics, ConvertSize As Double)
-            Try
-                For y = 0 To MapBuffer.Length
-                    Y_LineBuffer = SBuffer_LineForLine(y)
-                    For x = 0 To Y_LineBuffer.Length / ConvertSize
-                        Dim ConvertMap() As String = Y_LineBuffer.Split(","c)
-                        Select Case ConvertMap(Convert.ToInt32(x))
-                            Case "0"
-                                If TextureGround Is Nothing Then
-                                    Exit Select
-                                Else
-                                    MapX = Convert.ToInt32(x * TileSize)
-                                    MapY = y * TileSize
-                                    NewPos = Camera.MoveCamera(MapX, MapY)
-                                    Boden = New RectangleF(NewPos, New Size(TileSize, TileSize))
-                                    Graphics.DrawImage(TextureGround, Boden)
-                                End If
-                            Case "1"
-                                MapX = Convert.ToInt32(x * TileSize)
-                                MapY = y * TileSize
-                                NewPos = Camera.MoveCamera(MapX, MapY)
-                                Wand = New RectangleF(NewPos, New Size(TileSize, TileSize))
-                                CollisionStack.AddObject(MapBuffer, Wand)
-                                Graphics.DrawImage(TextureWall, Wand)
-                        End Select
-                    Next
-                Next
-                Graphics.Dispose()
-                TextureWall.Dispose()
-                TextureGround.Dispose()
-            Catch
-            End Try
-        End Sub
         Private Tile As RectangleF
         Private Tile_Wall As RectangleF
 
-        Public Sub ImageTile_In(Graphics As Graphics, TileSet2D As Bitmap, ConvertSizeBuffer As Double, TileSize_ As Integer, Size As Integer)
+        Private InMapX, InMapY As Integer
+
+        Public Sub ImageTile_In(Graphics As Graphics, ConvertSizeBuffer As Double, TileSize_ As Integer, Size As Integer)
             Try
                 For Y = 0 To MapBuffer.Length
                     Y_LineBuffer = SBuffer_LineForLine(Y)
                     For X = 0 To Convert.ToInt32(Y_LineBuffer.Length / ConvertSizeBuffer)
-                        For i = 0 To 20
+                        For i = 1 To 20
                             Dim ConvertMap As String() = Y_LineBuffer.Split(","c)
                             Select Case ConvertMap(Convert.ToInt32(X))
                                 Case i.ToString
                                     Tile = New RectangleF(Convert.ToSingle(i * TileSize_), 0.0F, Size, Size)
-                                    Graphics.DrawImage(TileSet2D, X * Size, Y * Size, Tile, GraphicsUnit.Pixel)
+                                    InMapX = X * Size
+                                    InMapY = Y * Size
+                                    NewPos = Camera.MoveCamera(InMapX, InMapY)
+                                    Graphics.DrawImage(TileSet2D, New RectangleF(NewPos, New SizeF(Size, Size)), Tile, GraphicsUnit.Pixel)
                                 Case "-" & i
                                     Tile_Wall = New RectangleF(Convert.ToSingle(i * TileSize_), 0.0F, Size, Size)
-                                    CollisionStack.AddObject(MapBuffer, New RectangleF(X * Size, Y * Size, Tile_Wall.Width, Tile_Wall.Height))
-                                    Graphics.DrawImage(TileSet2D, X * Size, Y * Size, Tile_Wall, GraphicsUnit.Pixel)
+                                    InMapX = X * Size
+                                    InMapY = Y * Size
+                                    NewPos = Camera.MoveCamera(InMapX, InMapY)
+                                    Graphics.DrawImage(TileSet2D, New RectangleF(NewPos, New SizeF(Size, Size)), Tile_Wall, GraphicsUnit.Pixel)
+                                    CollisionStack.AddObject(MapBuffer, New RectangleF(NewPos, New SizeF(Size, Size)))
+                                Case "!" & i
                             End Select
                         Next
-                    Next
-                Next
-            Catch
-            End Try
-        End Sub
-        Private TileTexture As TileTexture
-        ''' <summary>
-        ''' Filling tiles with textures, that belongs a tileset-texture-image.
-        ''' </summary>
-        ''' <param name="Graphics"></param>
-        ''' <param name="TileSetPath2D"></param>
-        ''' <param name="ConverterSizeBuffer"></param>
-        ''' <remarks></remarks>
-        Public Sub DrawTileSetsFromBitmap(Graphics As Graphics, TileSetPath2D As String, ConverterSizeBuffer As Double)
-            TileTexture = New TileTexture(New vmml_texture2d(TileSetPath2D))
-            Try
-                For y = 0 To MapBuffer.Length
-                    Y_LineBuffer = SBuffer_LineForLine(y)
-                    For x = 0 To Y_LineBuffer.Length / ConverterSizeBuffer
-                        Dim ConvertMap As String() = Y_LineBuffer.Split(" "c)
-
-                        Select Case ConvertMap(Convert.ToInt32(x))
-                            Case "0"
-                                TileTexture.GetTileSet(Graphics, 32, 0, 0, Convert.ToInt32(x * 32), y * 32, 32)
-                            Case "1"
-                                TileTexture.GetTileSet(Graphics, 32, 5, 0, Convert.ToInt32(x * 32), y * 32, 32)
-                        End Select
                     Next
                 Next
             Catch

@@ -12,9 +12,9 @@ Namespace SimpleShader
         Private MatrixTransforming As Single
         Private Site_bool As Boolean
         Private rnd_ As New Random
-        Public Sub New(Amount As Integer, ShaderSize As Point)
+        Public Sub New(Amount As Integer, ShaderSize As Point, StartPoints As Point)
             For i = 0 To Amount
-                StackOfGrass_test.Push(New RectangleF(rnd_.Next(0, ShaderSize.X), rnd_.Next(0, ShaderSize.Y), 1, rnd_.Next(2, 16)))
+                StackOfGrass_test.Push(New RectangleF(rnd_.Next(StartPoints.X, ShaderSize.X), rnd_.Next(StartPoints.Y, ShaderSize.Y), 1, rnd_.Next(2, 16)))
             Next
         End Sub
         Public Sub ShaderGrass(Graphics As Graphics)
