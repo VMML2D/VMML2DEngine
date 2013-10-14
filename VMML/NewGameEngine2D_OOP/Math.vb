@@ -1,4 +1,6 @@
-﻿Namespace Math
+﻿Imports System.Math
+
+Namespace Math
 
     Public Structure Trigonemetry
         Public Const PI As Double = 3.1415926535897931
@@ -45,6 +47,48 @@
         'ToDo
         'Several operators
         'Calculating and returning of 2 points (Vector2)
+        Public Sub New(ComponentX As Single, ComponentY As Single)
+            ComponentX = X
+            ComponentY = X
 
+        End Sub
+        Public Property X() As Single
+        Public Property Y() As Single
+
+        Public ReadOnly Property Length() As Double
+            Get
+                Return Sqrt(Pow(X, 2.0F) + Pow(Y, 2.0F))
+            End Get
+        End Property
+        Public Overrides Function ToString() As String
+            Return String.Format("({0},{0})", X, Y)
+        End Function
+
+        Public Shared Operator +(ByVal v1 As Vector2, v2 As Vector2) As Vector2
+            Return New Vector2(v1.X + v2.Y, v1.Y + v2.Y)
+        End Operator
+        Public Shared Operator -(v1 As Vector2, v2 As Vector2) As Vector2
+            Return New Vector2(v1.X - v2.X, v1.Y - v2.Y)
+        End Operator
+        Public Shared Operator *(v1 As Vector2, d As Single) As Vector2
+            Return New Vector2(v1.X * d, v1.Y * d)
+        End Operator
+        Public Shared Operator *(d As Single, v1 As Vector2) As Vector2
+            Return New Vector2(v1.X * d, v1.Y * d)
+        End Operator
+        Public Shared Operator /(v1 As Vector2, d As Single) As Vector2
+            Return New Vector2(v1.X / d, v1.Y / d)
+        End Operator
+        Public Shared Function ScalarProduct(v1 As Vector2, v2 As Vector2) As Single
+            Return v1.X * v2.X + v1.Y * v2.Y
+        End Function
+        Public Shared Function IsOrthogenal(v1 As Vector2, v2 As Vector2) As Boolean
+            If Single.Equals(ScalarProduct(v1, v2), 0) Then
+                Return True
+            Else
+                Return False
+
+            End If
+        End Function
     End Structure
 End Namespace
