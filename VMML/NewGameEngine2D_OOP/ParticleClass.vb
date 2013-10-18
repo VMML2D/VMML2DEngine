@@ -3,8 +3,12 @@ Namespace ParticleClass
     Public Class Particles
         'ToDo
         'Particals to support a dynamic game atmosphere
+
+        Public Sub New(Amount As Integer)
+            MaximumParticleAmount = Amount
+        End Sub
         Private ListOfSplashObject As New List(Of RectangleF)
-        Private MaximumParticleAmount As Integer = 6300
+        Private MaximumParticleAmount As Integer = 12000
         Private ArrayOfSplashObject(MaximumParticleAmount) As RectangleF
         Private YPosOfSplashParticle(MaximumParticleAmount) As Single
         Private SplashedBool(MaximumParticleAmount) As Boolean
@@ -28,7 +32,7 @@ Namespace ParticleClass
         Private CollisionObject As New List(Of RectangleF)
         Private ArrayOfCollisionObjects(MaximumParticleAmount) As RectangleF
 
-        Public Function Splash(MaximumFall As Integer, MaxiumSplashHeight As Integer, WindEffect As Boolean, WindStärkeMin As Integer, WindStärkeMax As Integer, SpeedMin As Integer, SpeedMax As Integer, Objects As RectangleF()) As RectangleF()
+        Public Function WaterSplash(MaximumFall As Integer, MaxiumSplashHeight As Integer, DropSpeed As Single, WindEffect As Boolean, WindStärkeMin As Integer, WindStärkeMax As Integer, SpeedMin As Integer, SpeedMax As Integer, Objects As RectangleF()) As RectangleF()
             Try
                 ListOfSplashObject.CopyTo(ArrayOfSplashObject)
                 For i = 0 To ArrayOfSplashObject.GetUpperBound(0) - 1
@@ -41,7 +45,7 @@ Namespace ParticleClass
                         ElseIf ArrayOfSplashObject(i).IntersectsWith(New RectangleF(ArrayOfSplashObject(i).Location.X, ArrayOfSplashObject(CInt(i / 2)).Location.Y, ArrayOfSplashObject(i).Size.Width, ArrayOfSplashObject(i).Size.Height)) Then
                             FloatI(i) += Rnd.Next(1, 11)
                             Float1I(i) -= Rnd.Next(1, 11)
-                       
+
                             SplashedBool(i) = True
                             Collapse(i) = True
 
@@ -51,9 +55,9 @@ Namespace ParticleClass
                             Float(i) += Rnd.Next(1, 15)
                             Float1(i) -= Rnd.Next(1, 12)
 
-               
-                        SplashedBool(i) = True
-                        Collapse(i) = True
+
+                            SplashedBool(i) = True
+                            Collapse(i) = True
                         ElseIf Not ArrayOfSplashObject(i).IntersectsWith(Objects(j)) Then
                             Collapse(i) = False
 
@@ -66,7 +70,8 @@ Namespace ParticleClass
 
                         Else
 
-                            YPosOfSplashParticle(i) -= 0.2F
+                            YPosOfSplashParticle(i) -= DropSpeed
+
 
                             MaximumHeight(i) += 1
                         End If
@@ -96,7 +101,7 @@ Namespace ParticleClass
         End Function
         Private Amount As Integer
 
-        Public Function AddSplashRec(SplashRecF As RectangleF) As Boolean
+        Public Function AddWaterSplashRec(SplashRecF As RectangleF) As Boolean
             If ListOfSplashObject.Count >= MaximumParticleAmount Then
                 Done = True
                 Return False
