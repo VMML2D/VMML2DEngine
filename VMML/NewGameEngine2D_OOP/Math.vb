@@ -56,6 +56,10 @@ Namespace Math
             Return xn
         End Function
     End Class
+    ''' <summary>
+    ''' Defines 2 points in a 2 dimensionaly sphere...
+    ''' </summary>
+    ''' <remarks></remarks>
     Public Structure Point2D
         Public Sub New(ComponentX As Single, ComponentY As Single)
             X = ComponentX
@@ -84,7 +88,19 @@ Namespace Math
         Public Overrides Function ToString() As String
             Return String.Format("({0},{1})", X, Y)
         End Function
+        Public Shared Function Equals(Point2D As Point2D, Obj2 As Object) As Boolean
+            If Object.Equals(Point2D, Obj2) Then
+                Return True
+            Else
+                Return False
+
+            End If
+        End Function
     End Structure
+    ''' <summary>
+    ''' Defines a 2D vector with 2 components...
+    ''' </summary>
+    ''' <remarks></remarks>
     Public Structure Vector2
         'ToDo
         'Several operators
@@ -141,6 +157,10 @@ Namespace Math
             End If
         End Function
     End Structure
+    ''' <summary>
+    ''' Defines 3 points in a 3 dimensionaly sphere...
+    ''' </summary>
+    ''' <remarks></remarks>
     Public Structure Point3D
         Public Sub New(ComponentX As Single, ComponentY As Single, ComponentZ As Single)
             X = ComponentX
@@ -174,7 +194,19 @@ Namespace Math
 
         End Function
 
+        Public Shared Function Equals(Point3D As Point3D, Obj As Object) As Boolean
+            If Object.Equals(Point3D, Obj) Then
+                Return True
+            Else
+                Return False
+
+            End If
+        End Function
     End Structure
+    ''' <summary>
+    ''' Defines a 3D vector with 3 components...
+    ''' </summary>
+    ''' <remarks></remarks>
     Public Structure Vector3
         Public Sub New(Point3D As Point3D)
             X = Point3D.X
